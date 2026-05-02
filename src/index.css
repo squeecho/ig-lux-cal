@@ -1,0 +1,6 @@
+/* iggg-lux — Tailwind는 index.html에서 CDN으로 로드.
+   이 파일은 PostCSS 빌드 모드 전환 시를 위한 placeholder.
+*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

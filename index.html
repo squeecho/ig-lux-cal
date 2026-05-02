@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iggg lux — 조도 계산기 PRO</title>
+
+    <!-- 공유용 메타 태그 -->
+    <meta property="og:title" content="iggg lux — 조도 계산기 PRO" />
+    <meta property="og:description" content="실지수 K · 인테리어 톤 · 공간별 MF 자동 보정. F&B 매장 조명 설계 도구." />
+    <meta property="og:image" content="https://iggg-lux.vercel.app/Thumb.png?v=1" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content="https://iggg-lux.vercel.app" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="iggg lux — 조도 계산기 PRO" />
+    <meta name="twitter:description" content="실지수 K · 인테리어 톤 · 공간별 MF 자동 보정. F&B 매장 조명 설계 도구." />
+    <meta name="twitter:image" content="https://iggg-lux.vercel.app/Thumb.png?v=1" />
+
+    <!-- ───────── IGGG Design System v1.1 — Fonts ───────── -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- ───────── Tailwind CDN v3 + 색상 팔레트를 v1.1 토큰에 매핑 ───────── -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Tailwind 색상 팔레트를 IGGG v1.1 CSS 변수로 매핑.
+      // 결과: 컴포넌트의 className(bg-white, bg-blue-600 등)이
+      // 다크/라이트 토글 시 자동으로 따라옴.
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              white: 'var(--bg-elev)',
+              gray: {
+                50:  'var(--bg)',
+                100: 'var(--bg-input)',
+                200: 'var(--line-soft)',
+                300: 'var(--line-soft)',
+                400: 'var(--fg-faint)',
+                500: 'var(--fg-mute)',
+                600: 'var(--fg-mute)',
+                700: 'var(--fg)',
+                800: 'var(--fg)',
+                900: 'var(--fg)',
+              },
+              blue: {
+                300: 'var(--line)',
+                600: 'var(--accent)',
+                700: 'var(--accent)',
+              },
+              purple: {
+                600: 'var(--accent)',
+                700: 'var(--accent)',
+              },
+              green: {
+                50:  'var(--bg-input)',
+                200: 'var(--line-soft)',
+                500: 'var(--success)',
+                600: 'var(--accent)',
+                700: 'var(--accent)',
+              },
+              yellow: {
+                50:  'var(--bg-input)',
+                400: 'var(--warning)',
+              },
+              amber: {
+                50:  'var(--bg-input)',
+                200: 'var(--line-soft)',
+              },
+              red: {
+                50:  'var(--bg-elev)',
+                200: 'var(--danger)',
+                300: 'var(--danger)',
+                500: 'var(--danger)',
+                600: 'var(--danger)',
+              },
+            },
+            fontFamily: {
+              sans:    ['Pretendard Variable', 'Inter', 'system-ui', 'sans-serif'],
+              mono:    ['JetBrains Mono', 'ui-monospace', 'monospace'],
+              display: ['Inter', 'Pretendard Variable', 'system-ui', 'sans-serif'],
+            },
+          }
+        }
+      }
+    </script>
+
+    <!-- ───────── IGGG Design System v1.1 — Tokens & Patterns ───────── -->
+    <style>
+      :root {
+        --fz-display-xl: clamp(3rem, 7vw, 5rem);
+        --fz-display-l:  clamp(2rem, 5vw, 3rem);
+        --fz-display-m:  1.5rem;
+        --fz-body:       0.9375rem;
+        --fz-mono-l:     0.8125rem;
+        --fz-mono-m:     0.6875rem;
+        --fz-mono-s:     0.625rem;
+
+        --ls-display:    -0.02em;
+        --ls-mono:       0.08em;
+        --ls-mono-wide:  0.18em;
+
+        --line-1: 1px;
+        --radius-cap: 999px;
+        --radius-md: 4px;
+
+        --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+        --sp-6: 24px; --sp-8: 32px;
+
+        --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        --dur-fast: 120ms;
+        --dur-base: 200ms;
+
+        --ff-display: "Inter", "Pretendard Variable", system-ui, sans-serif;
+        --ff-mono:    "JetBrains Mono", ui-monospace, monospace;
+        --ff-body:    "Pretendard Variable", "Inter", system-ui, sans-serif;
+      }
+
+      :root[data-theme="dark"] {
+        --bg:        #0a0a0a;
+        --bg-elev:   #141414;
+        --bg-input:  #2d2d2d;
+        --bg-input-focus: #383838;
+        --fg:        #f4f2ed;
+        --fg-mute:   rgba(244, 242, 237, 0.6);
+        --fg-faint:  rgba(244, 242, 237, 0.4);
+        --line:      rgba(244, 242, 237, 0.55);
+        --line-soft: rgba(244, 242, 237, 0.35);
+        --accent:    #f4f2ed;
+        --accent-fg: #0a0a0a;
+        --danger:    #ff6b5e;
+        --success:   #6ec47a;
+        --warning:   #d4a849;
+        --grain-opacity: 0.08;
+      }
+
+      :root[data-theme="light"] {
+        --bg:        #f4f2ed;
+        --bg-elev:   #ebe8e1;
+        --bg-input:  #ffffff;
+        --bg-input-focus: #ffffff;
+        --fg:        #0a0a0a;
+        --fg-mute:   rgba(10, 10, 10, 0.62);
+        --fg-faint:  rgba(10, 10, 10, 0.32);
+        --line:      rgba(10, 10, 10, 0.55);
+        --line-soft: rgba(10, 10, 10, 0.16);
+        --accent:    #0a0a0a;
+        --accent-fg: #f4f2ed;
+        --danger:    #c8302a;
+        --success:   #2d8a3a;
+        --warning:   #b8841e;
+        --grain-opacity: 0.04;
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root:not([data-theme]) {
+          --bg: #f4f2ed; --bg-elev: #ebe8e1;
+          --bg-input: #ffffff; --bg-input-focus: #ffffff;
+          --fg: #0a0a0a;
+          --fg-mute: rgba(10,10,10,0.62);
+          --fg-faint: rgba(10,10,10,0.32);
+          --line: rgba(10,10,10,0.55); --line-soft: rgba(10,10,10,0.16);
+          --accent: #0a0a0a; --accent-fg: #f4f2ed;
+          --danger: #c8302a; --success: #2d8a3a; --warning: #b8841e;
+          --grain-opacity: 0.04;
+        }
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body {
+        margin: 0; padding: 0; min-height: 100%;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: var(--ff-body);
+        font-size: var(--fz-body);
+        -webkit-font-smoothing: antialiased;
+        transition: background var(--dur-base), color var(--dur-base);
+      }
+
+      input[type="text"], input[type="number"], select, textarea {
+        background: var(--bg-input);
+        color: var(--fg);
+        transition: background var(--dur-fast), border-color var(--dur-fast);
+      }
+      input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+        outline: none;
+        background: var(--bg-input-focus) !important;
+        border-color: var(--fg) !important;
+      }
+      input::placeholder { color: var(--fg-faint); }
+      select { color: var(--fg); }
+      select option { background: var(--bg-elev); color: var(--fg); }
+
+      :root[data-theme="dark"] select {
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f4f2ed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+      }
+
+      :root[data-theme="dark"] .shadow {
+        box-shadow: 0 1px 0 rgba(0,0,0,0.4);
+      }
+
+      /* Theme toggle */
+      .theme-toggle {
+        position: fixed;
+        top: var(--sp-3);
+        right: var(--sp-3);
+        z-index: 100;
+        background: var(--bg);
+        border: var(--line-1) solid var(--line);
+        border-radius: var(--radius-cap);
+        padding: var(--sp-1) var(--sp-3);
+        font-family: var(--ff-mono);
+        font-size: var(--fz-mono-m);
+        letter-spacing: var(--ls-mono);
+        color: var(--fg);
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: background var(--dur-fast);
+      }
+      .theme-toggle:hover { background: var(--bg-elev); }
+
+      /* Hero */
+      .iggg-hero {
+        padding: var(--sp-8) 0 var(--sp-4);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--sp-3);
+        border-bottom: var(--line-1) dashed var(--line-soft);
+        margin-bottom: var(--sp-4);
+      }
+      .iggg-hero__title {
+        font-family: var(--ff-display);
+        font-weight: 900;
+        font-size: var(--fz-display-l);
+        letter-spacing: var(--ls-display);
+        line-height: 1;
+        color: var(--fg);
+        text-align: center;
+      }
+      .iggg-hero__meta {
+        display: flex; flex-wrap: wrap; gap: var(--sp-3); align-items: baseline; justify-content: center;
+      }
+      .iggg-hero__meta span {
+        font-family: var(--ff-mono);
+        font-size: var(--fz-mono-s);
+        letter-spacing: var(--ls-mono);
+        color: var(--fg-faint);
+        text-transform: uppercase;
+      }
+
+      /* Footer */
+      .iggg-footer {
+        border-top: var(--line-1) dashed var(--line-soft);
+        margin-top: var(--sp-8);
+        padding: var(--sp-4) 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--sp-3);
+        flex-wrap: wrap;
+      }
+      .iggg-footer span {
+        font-family: var(--ff-mono);
+        font-size: var(--fz-mono-s);
+        letter-spacing: var(--ls-mono);
+        color: var(--fg-faint);
+        text-transform: uppercase;
+      }
+
+      :root[data-theme="dark"] .iggg-logo { filter: invert(1) brightness(1.1); }
+
+      /* Grain overlay */
+      body::before {
+        content: "";
+        position: fixed; inset: 0; pointer-events: none; z-index: 1;
+        opacity: var(--grain-opacity);
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+        mix-blend-mode: overlay;
+      }
+      body > * { position: relative; z-index: 2; }
+    </style>
+  </head>
+  <body>
+    <button class="theme-toggle" id="themeToggle" type="button" onclick="toggleTheme()">다크 / 01</button>
+
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <script>
+      function toggleTheme() {
+        const root = document.documentElement;
+        const cur = root.dataset.theme || 'dark';
+        const next = cur === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        localStorage.setItem('iggg-theme', next);
+        const btn = document.getElementById('themeToggle');
+        if (btn) btn.textContent = next === 'dark' ? '다크 / 01' : '라이트 / 02';
+      }
+      (function initTheme(){
+        const saved = localStorage.getItem('iggg-theme');
+        const sys = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        const t = saved || sys;
+        document.documentElement.dataset.theme = t;
+        document.addEventListener('DOMContentLoaded', () => {
+          const btn = document.getElementById('themeToggle');
+          if (btn) btn.textContent = t === 'dark' ? '다크 / 01' : '라이트 / 02';
+        });
+      })();
+    </script>
+  </body>
+</html>

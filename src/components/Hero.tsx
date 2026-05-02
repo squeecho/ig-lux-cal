@@ -1,0 +1,13 @@
+export function Hero() {
+  return (
+    <header className="iggg-hero">
+      <img src="/logo.png" alt="iggg studio" className="iggg-logo w-28 h-auto object-contain"/>
+      <h1 className="iggg-hero__title">LIGHTING<br/>CALCULATOR</h1>
+      <div className="iggg-hero__meta">
+        <span>간이 조도 계산기 PRO</span>
+        <span>v3.0</span>
+        <span>© 2026 IGGG STUDIO</span>
+      </div>
+    </header>
+  )
+}
