@@ -61,7 +61,7 @@ export function CustomLight({ onAdd, onSaveCustom }: Props) {
       ? watt * 80
       : lumen
     onAdd({
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       name,
       lumen: finalLumen,
       watt,
@@ -77,7 +77,7 @@ export function CustomLight({ onAdd, onSaveCustom }: Props) {
   const handleSave = () => {
     if (!canSubmit) return
     onSaveCustom({
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       name,
       lumen,
       watt,

@@ -14,7 +14,7 @@ export function SavedLights({ saved, onLoad, onDelete }: Props) {
 
   const handleLoad = (light: SavedCustomLight) => {
     onLoad({
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       name: light.name,
       lumen: light.lumen,
       watt: light.watt,

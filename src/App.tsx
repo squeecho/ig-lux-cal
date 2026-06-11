@@ -97,7 +97,7 @@ function App() {
   const saveCurrentResult = () => {
     if (!canSaveResult) return
     const newResult: SavedResult = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       name: resultName || `조도 결과 ${new Date().toLocaleDateString()}`,
       area, height, desiredLux,
       expectedLux: summary.expectedLux,

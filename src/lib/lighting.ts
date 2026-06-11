@@ -9,7 +9,7 @@
 */
 
 import type { Light, InteriorTone, SpaceType } from '../types'
-import { SPACE_TYPES, INTERIOR_TONES } from '../data/lights'
+import { INTERIOR_TONES } from '../data/lights'
 
 /** 실지수 K 계산 (정사각형 공간 가정).
  *  @param area_m2 면적 (m²)
@@ -39,12 +39,6 @@ export function toneFactor(tone: InteriorTone): number {
   return INTERIOR_TONES.find(t => t.value === tone)?.factor ?? 0.85
 }
 
-/** 최종 UF (조명률 × 톤 보정) */
-export function calcUF(area_m2: number, height_mm: number, tone: InteriorTone): number {
-  const K = calcRoomIndex(area_m2, height_mm)
-  return baseUF(K) * toneFactor(tone)
-}
-
 /** UF 단계 라벨 (UI 표시용) */
 export function ufLabel(K: number): string {
   if (K <= 0.6)  return '좁고 높음 (K≤0.6)'
@@ -58,11 +52,6 @@ export function ufLabel(K: number): string {
   return '넓고 낮음 (K>3.0)'
 }
 
-/** 공간 유형 → MF (보수율) */
-export function calcMF(spaceTypeName: string): number {
-  return SPACE_TYPES.find(s => s.name === spaceTypeName)?.mf ?? 0.80
-}
-
 /** 광원 합산 (간접조명은 0.7 보정) */
 export function sumLumen(lights: Light[]): number {
   return lights.reduce((sum, l) => {
@@ -74,24 +63,6 @@ export function sumLumen(lights: Light[]): number {
 /** 총 와트 합산 */
 export function sumWatt(lights: Light[]): number {
   return lights.reduce((sum, l) => sum + l.watt * l.quantity, 0)
-}
-
-/** 예상 조도 계산 (메인 식)
- *  @returns lx (반올림된 정수)
- */
-export function calcExpectedLux(params: {
-  lights: Light[]
-  area_m2: number
-  height_mm: number
-  tone: InteriorTone
-  spaceTypeName: string
-}): number {
-  const { lights, area_m2, height_mm, tone, spaceTypeName } = params
-  if (area_m2 <= 0) return 0
-  const lm = sumLumen(lights)
-  const uf = calcUF(area_m2, height_mm, tone)
-  const mf = calcMF(spaceTypeName)
-  return Math.round((lm * uf * mf) / area_m2)
 }
 
 /** 종합 결과 (UI에서 한 번에 가져가도록 묶음) */
@@ -136,14 +107,9 @@ export function calcSummary(params: {
   }
 }
 
-/** 커스텀 조명 종류별 lm/W 효율 조회 */
-export function getLumensPerWatt(typeValue: string, customEfficiency?: number): number {
-  if (typeValue === '기타') {
-    if (customEfficiency && customEfficiency >= 40 && customEfficiency <= 200) {
-      return customEfficiency
-    }
-    return 80 // 기본값
-  }
+/** 커스텀 조명 종류별 lm/W 효율 조회 ('기타'는 기본값 80, 호출부에서 직접 입력값 처리) */
+export function getLumensPerWatt(typeValue: string): number {
+  if (typeValue === '기타') return 80
   const map: Record<string, number> = {
     '매립조명': 90,
     '직부조명': 90,

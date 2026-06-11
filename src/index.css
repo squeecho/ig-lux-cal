@@ -1,6 +1,50 @@
-/* iggg-lux — Tailwind는 index.html에서 CDN으로 로드.
-   이 파일은 PostCSS 빌드 모드 전환 시를 위한 placeholder.
+/* iggg-lux — Tailwind v4 (PostCSS 빌드).
+   디자인 토큰(:root --bg, --fg 등)은 index.html <style>에서 정의.
+   아래 @theme inline 으로 Tailwind 색상/폰트 유틸을 그 토큰에 매핑한다.
+   → 컴포넌트의 bg-white / bg-blue-600 등이 다크/라이트 토글을 자동으로 따라감.
 */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme inline {
+  --color-white: var(--bg-elev);
+
+  --color-gray-50: var(--bg);
+  --color-gray-100: var(--bg-input);
+  --color-gray-200: var(--line-soft);
+  --color-gray-300: var(--line-soft);
+  --color-gray-400: var(--fg-faint);
+  --color-gray-500: var(--fg-mute);
+  --color-gray-600: var(--fg-mute);
+  --color-gray-700: var(--fg);
+  --color-gray-800: var(--fg);
+  --color-gray-900: var(--fg);
+
+  --color-blue-300: var(--line);
+  --color-blue-600: var(--accent);
+  --color-blue-700: var(--accent);
+
+  --color-purple-600: var(--accent);
+  --color-purple-700: var(--accent);
+
+  --color-green-50: var(--bg-input);
+  --color-green-200: var(--line-soft);
+  --color-green-500: var(--success);
+  --color-green-600: var(--accent);
+  --color-green-700: var(--accent);
+
+  --color-yellow-50: var(--bg-input);
+  --color-yellow-400: var(--warning);
+
+  --color-amber-50: var(--bg-input);
+  --color-amber-200: var(--line-soft);
+
+  --color-red-50: var(--bg-elev);
+  --color-red-200: var(--danger);
+  --color-red-300: var(--danger);
+  --color-red-500: var(--danger);
+  --color-red-600: var(--danger);
+
+  --font-sans: "Pretendard Variable", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-display: "Inter", "Pretendard Variable", system-ui, sans-serif;
+}

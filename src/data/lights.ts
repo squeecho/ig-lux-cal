@@ -1,6 +1,6 @@
 import type { LightData, SpaceType, InteriorToneOption } from '../types'
 
-/* ───────── 조명 카탈로그 (47개) ─────────
+/* ───────── 조명 카탈로그 (46개) ─────────
    기존 데이터 유지. 추가 시 이 파일만 수정하면 됨.
 */
 export const LIGHT_CATALOG: LightData[] = [

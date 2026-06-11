@@ -2,7 +2,6 @@
 <html lang="ko" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>iggg lux — 조도 계산기 PRO</title>
 
@@ -26,70 +25,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-    <!-- ───────── Tailwind CDN v3 + 색상 팔레트를 v1.1 토큰에 매핑 ───────── -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      // Tailwind 색상 팔레트를 IGGG v1.1 CSS 변수로 매핑.
-      // 결과: 컴포넌트의 className(bg-white, bg-blue-600 등)이
-      // 다크/라이트 토글 시 자동으로 따라옴.
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              white: 'var(--bg-elev)',
-              gray: {
-                50:  'var(--bg)',
-                100: 'var(--bg-input)',
-                200: 'var(--line-soft)',
-                300: 'var(--line-soft)',
-                400: 'var(--fg-faint)',
-                500: 'var(--fg-mute)',
-                600: 'var(--fg-mute)',
-                700: 'var(--fg)',
-                800: 'var(--fg)',
-                900: 'var(--fg)',
-              },
-              blue: {
-                300: 'var(--line)',
-                600: 'var(--accent)',
-                700: 'var(--accent)',
-              },
-              purple: {
-                600: 'var(--accent)',
-                700: 'var(--accent)',
-              },
-              green: {
-                50:  'var(--bg-input)',
-                200: 'var(--line-soft)',
-                500: 'var(--success)',
-                600: 'var(--accent)',
-                700: 'var(--accent)',
-              },
-              yellow: {
-                50:  'var(--bg-input)',
-                400: 'var(--warning)',
-              },
-              amber: {
-                50:  'var(--bg-input)',
-                200: 'var(--line-soft)',
-              },
-              red: {
-                50:  'var(--bg-elev)',
-                200: 'var(--danger)',
-                300: 'var(--danger)',
-                500: 'var(--danger)',
-                600: 'var(--danger)',
-              },
-            },
-            fontFamily: {
-              sans:    ['Pretendard Variable', 'Inter', 'system-ui', 'sans-serif'],
-              mono:    ['JetBrains Mono', 'ui-monospace', 'monospace'],
-              display: ['Inter', 'Pretendard Variable', 'system-ui', 'sans-serif'],
-            },
-          }
-        }
-      }
-    </script>
+    <!-- Tailwind는 src/index.css(@import "tailwindcss")에서 빌드. 색상 토큰 매핑은 @theme 참조. -->
 
     <!-- ───────── IGGG Design System v1.1 — Tokens & Patterns ───────── -->
     <style>
@@ -273,8 +209,6 @@
         color: var(--fg-faint);
         text-transform: uppercase;
       }
-
-      :root[data-theme="dark"] .iggg-logo { filter: invert(1) brightness(1.1); }
 
       /* Grain overlay */
       body::before {
