@@ -34,6 +34,8 @@ export interface SavedCustomLight {
   watt: number
   type: string
   efficiency?: number
+  /** 추가 시와 동일한 계산 카테고리 — 구 저장분은 없음(불러오기에서 type 폴백) */
+  category?: string
 }
 
 /** 저장된 조도 결과 (스냅샷) */

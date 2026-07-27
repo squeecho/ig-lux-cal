@@ -21,7 +21,8 @@ export function SavedLights({ saved, onLoad, onDelete }: Props) {
       colorTemp: '커스텀',
       size: '커스텀',
       quantity: 1,
-      category: light.type === '기타' ? '루멘 기준 커스텀' : light.type,
+      // 저장 시점의 계산 카테고리를 그대로 복원 — 구 저장분(category 없음)만 type 폴백
+      category: light.category ?? (light.type === '기타' ? '루멘 기준 커스텀' : light.type),
       type: '커스텀',
     })
     setOpen(false)

@@ -55,20 +55,25 @@ export function CustomLight({ onAdd, onSaveCustom }: Props) {
     }
   }
 
-  const handleAdd = () => {
-    if (!canSubmit) return
-    const finalLumen = type === '기타' && (efficiency < 40 || efficiency > 200 || efficiency === 0)
+  // 추가·저장이 같은 값을 쓰도록 단일 계산(전수감사 2026-07-28 — 저장은 보정 전
+  // lumen·잠복 type 을 담아 "추가"와 "저장 후 불러오기"의 조도 결과가 달랐다)
+  const effectiveLumen = () =>
+    type === '기타' && (efficiency < 40 || efficiency > 200 || efficiency === 0)
       ? watt * 80
       : lumen
+  const effectiveCategory = () => (mode === 'watt' ? type : '루멘 기준 커스텀')
+
+  const handleAdd = () => {
+    if (!canSubmit) return
     onAdd({
       id: crypto.randomUUID(),
       name,
-      lumen: finalLumen,
+      lumen: effectiveLumen(),
       watt,
       colorTemp: '커스텀',
       size: '커스텀',
       quantity: 1,
-      category: mode === 'watt' ? type : '루멘 기준 커스텀',
+      category: effectiveCategory(),
       type: '커스텀',
     })
     setName(''); setLumen(0); setWatt(0)
@@ -79,10 +84,11 @@ export function CustomLight({ onAdd, onSaveCustom }: Props) {
     onSaveCustom({
       id: crypto.randomUUID(),
       name,
-      lumen,
+      lumen: effectiveLumen(),
       watt,
       type,
       efficiency: type === '기타' ? efficiency : undefined,
+      category: effectiveCategory(),
     })
   }
 
