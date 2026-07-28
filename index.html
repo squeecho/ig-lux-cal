@@ -162,6 +162,55 @@
       }
       .theme-toggle:hover { background: var(--bg-elev); }
 
+      /* 공통 셸(허브·계정·로그아웃) — 12앱 공통 규약 2026-07-28.
+         테마 토글을 이 줄 안으로 넣고(고정 위치는 줄이 가져간다) 좌측에 3종을 둔다. */
+      .iggg-topbar {
+        position: fixed;
+        top: var(--sp-3);
+        right: var(--sp-3);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+        max-width: calc(100vw - var(--sp-6));
+      }
+      .iggg-topbar .theme-toggle { position: static; top: auto; right: auto; z-index: auto; }
+      .iggg-shell-btn {
+        background: var(--bg);
+        border: var(--line-1) solid var(--line-soft);
+        border-radius: var(--radius-cap);
+        padding: var(--sp-1) var(--sp-3);
+        font-family: var(--ff-mono);
+        font-size: var(--fz-mono-m);
+        letter-spacing: var(--ls-mono);
+        color: var(--fg-mute);
+        cursor: pointer;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: color var(--dur-fast), border-color var(--dur-fast);
+      }
+      .iggg-shell-btn:hover { color: var(--fg); border-color: var(--line); }
+      #igShellLogout:hover { color: var(--danger); border-color: var(--danger); }
+      .iggg-shell-email {
+        font-family: var(--ff-mono);
+        font-size: var(--fz-mono-s);
+        letter-spacing: var(--ls-mono);
+        color: var(--fg-faint);
+        max-width: 20vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .iggg-shell-email:empty { display: none; }
+      /* 모바일: 한 줄 유지(칩 패딩 축소 + 이메일 말줄임) + 히어로가 줄 아래에서 시작 */
+      @media (max-width: 560px) {
+        .iggg-topbar { gap: var(--sp-1); }
+        .iggg-shell-btn { padding: var(--sp-1) var(--sp-2); }
+        .iggg-topbar .theme-toggle { padding: var(--sp-1) var(--sp-2); }
+        .iggg-shell-email { max-width: 24vw; }
+        .iggg-hero { padding-top: 56px; }
+      }
+
       /* Hero */
       .iggg-hero {
         padding: var(--sp-8) 0 var(--sp-4);
@@ -223,7 +272,13 @@
     </style>
   </head>
   <body>
-    <button class="theme-toggle" id="themeToggle" type="button" onclick="toggleTheme()">다크 / 01</button>
+    <!-- 공통 셸 — 허브 복귀 · 로그인 계정 · 로그아웃(12앱 공통 규약 2026-07-28) -->
+    <div class="iggg-topbar">
+      <a class="iggg-shell-btn" href="https://home.igggstudio.com/">허브</a>
+      <span class="iggg-shell-email" id="igShellEmail"></span>
+      <button class="iggg-shell-btn" type="button" id="igShellLogout">로그아웃</button>
+      <button class="theme-toggle" id="themeToggle" type="button" onclick="toggleTheme()">다크 / 01</button>
+    </div>
 
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
@@ -247,6 +302,31 @@
           const btn = document.getElementById('themeToggle');
           if (btn) btn.textContent = t === 'dark' ? '다크 / 01' : '라이트 / 02';
         });
+      })();
+
+      // ── 공통 셸(허브·계정·로그아웃) — 12앱 공통 규약 2026-07-28 ──
+      // iggg_sso 쿠키 = encodeURIComponent(JSON.stringify({email, refreshToken})).
+      // 계정 표기는 textContent 로만(innerHTML 금지 — 쿠키는 신뢰 입력이 아니다).
+      // 로그아웃은 쿠키를 지우고 www 의 전역 로그아웃 진입점으로 — ig-links 040c2b0 과 동일 규약
+      // (www 루트로만 가면 세션 정본이 쿠키를 재발급해 로그아웃이 무효였다).
+      (function initIgShell(){
+        function mount(){
+          try {
+            const m = document.cookie.match(/(?:^|; )iggg_sso=([^;]*)/);
+            if (m) {
+              const email = (JSON.parse(decodeURIComponent(m[1])) || {}).email || '';
+              const el = document.getElementById('igShellEmail');
+              if (email && el) el.textContent = email;
+            }
+          } catch (e) { /* 계정 표시 실패는 치명 아님 */ }
+          const btn = document.getElementById('igShellLogout');
+          if (btn) btn.addEventListener('click', () => {
+            document.cookie = 'iggg_sso=; Path=/; Domain=.igggstudio.com; Max-Age=0';
+            location.href = 'https://www.igggstudio.com/?logout=1';
+          });
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);
+        else mount();
       })();
     </script>
   </body>
