@@ -26,13 +26,17 @@
   --color-purple-600: var(--accent);
   --color-purple-700: var(--accent);
 
-  --color-green-50: var(--bg-input);
+  /* ⚠성공/경고 배경이 둘 다 --bg-input 이라 **완전히 같은 색**이었다 —
+     조도 달성(174%)과 미달(17%) 카드가 눈으로 구별되지 않았다(실브라우저 관측
+     2026-07-29). 톤 통일은 의도지만 판정 구분까지 지우면 사장이 오판한다.
+     테마 배경 위에 의미색을 12%만 섞어 **테마를 따라가면서도 구분**되게 한다. */
+  --color-green-50: color-mix(in srgb, var(--success) 12%, var(--bg-input));
   --color-green-200: var(--line-soft);
   --color-green-500: var(--success);
   --color-green-600: var(--accent);
   --color-green-700: var(--accent);
 
-  --color-yellow-50: var(--bg-input);
+  --color-yellow-50: color-mix(in srgb, var(--warning) 14%, var(--bg-input));
   --color-yellow-400: var(--warning);
 
   --color-amber-50: var(--bg-input);
