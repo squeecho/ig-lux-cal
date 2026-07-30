@@ -11,14 +11,27 @@
 import type { Light, InteriorTone, SpaceType } from '../types'
 import { INTERIOR_TONES } from '../data/lights'
 
+/** 작업면 높이(m) — 실지수는 **작업면에서 조명까지의 높이(Hm)** 로 계산한다.
+ *  KS·IES 관행값 0.8m(테이블 상면). 사장 결정 2026-07-31로 적용.
+ */
+export const WORK_PLANE_M = 0.8
+
 /** 실지수 K 계산 (정사각형 공간 가정).
+ *
+ *  ⚠**작업면 보정**(사장 결정 2026-07-31, 감사 백로그 #54): 예전엔 천장고를 그대로
+ *    써서 Hm 을 과대평가했고, 그만큼 K 가 작게 나와 조명률(UF)이 낮게 잡혔다
+ *    — 필요 조도를 맞추려면 등기구가 실제보다 더 많이 필요하다고 계산된다.
+ *    실지수는 바닥이 아니라 **작업면 기준**이 표준이다(Hm = 천장고 − 0.8m).
+ *    ⓘ 이 변경으로 **기존 계산서와 숫자가 달라진다**(K↑ → UF↑ → 예상 조도↑).
+ *
  *  @param area_m2 면적 (m²)
  *  @param height_mm 천장 높이 (mm)
  */
 export function calcRoomIndex(area_m2: number, height_mm: number): number {
   if (area_m2 <= 0 || height_mm <= 0) return 0
-  const h = height_mm / 1000
-  return Math.sqrt(area_m2) / (2 * h)
+  const hm = height_mm / 1000 - WORK_PLANE_M
+  if (hm <= 0) return 0        // 천장고가 작업면 이하 — 계산 불가(입력 오류)
+  return Math.sqrt(area_m2) / (2 * hm)
 }
 
 /** 실지수 K → 기본 조명률 (반사율 70/50/30 가정, IES 표 근사) */
