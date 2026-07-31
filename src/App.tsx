@@ -3,6 +3,7 @@ import './App.css'
 
 import { SPACE_TYPES } from './data/lights'
 import { calcSummary, stripLeadingZeros } from './lib/lighting'
+import { saveDraft, loadDraft } from './lib/draft'
 import type { Light, SavedCustomLight, SavedResult, SpaceType, InteriorTone } from './types'
 
 import { Hero } from './components/Hero'
@@ -42,7 +43,30 @@ function App() {
       const sr = localStorage.getItem(LS_KEY_RESULTS)
       if (sr) setSavedResults(JSON.parse(sr))
     } catch (e) { console.error('savedResults 로드 실패:', e) }
+    // ⚠작업 중이던 입력 복원(감사 2026-07-29 #151). 예전엔 자동저장도 이탈
+    //   경고도 없어 새로고침 한 번에 작업이 전소됐다. 저장한 목록만 남고
+    //   '지금 만들던 것'은 아무 데도 없었다.
+    const d = loadDraft(localStorage)
+    if (d) {
+      setArea(d.area)
+      setHeight(d.height)
+      setDesiredLux(d.desiredLux)
+      setTone(d.tone as InteriorTone)
+      setSelectedLights(d.selectedLights as Light[])
+      const st = SPACE_TYPES.find(x => x.name === d.spaceTypeName)
+      if (st) setSpaceType(st)
+    }
   }, [])
+
+  /* ───────── 작업 중 입력 자동저장 (감사 #151) ─────────
+     계산 결과는 파생이라 담지 않는다 — 저장했다가 계산식이 바뀌면 낡은 값을
+     되살리게 된다. 저장 실패(용량 초과·시크릿 모드)는 조용히 넘긴다. */
+  useEffect(() => {
+    saveDraft(localStorage, {
+      area, height, spaceTypeName: spaceType.name, desiredLux, tone,
+      selectedLights,
+    }, new Date().toISOString())
+  }, [area, height, spaceType, desiredLux, tone, selectedLights])
 
   /* ───────── 계산 (실시간) ───────── */
   const summary = useMemo(() => calcSummary({
