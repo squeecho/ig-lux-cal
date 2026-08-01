@@ -4,6 +4,7 @@ import './App.css'
 import { SPACE_TYPES } from './data/lights'
 import { calcSummary, stripLeadingZeros } from './lib/lighting'
 import { saveDraft, loadDraft } from './lib/draft'
+import { loadConfirmMessage, deleteConfirmMessage } from './lib/overwriteGuard'
 import type { Light, SavedCustomLight, SavedResult, SpaceType, InteriorTone } from './types'
 
 import { Hero } from './components/Hero'
@@ -139,6 +140,10 @@ function App() {
     setResultName('')
   }
   const loadResult = (r: SavedResult) => {
+    // ⚠불러오기는 **현재 작업을 전부 덮어쓴다**. 작업 중일 때만 묻는다 —
+    //   빈 화면에서까지 확인창을 띄우면 읽지 않고 누르는 습관이 든다(감사 #150).
+    const warn = loadConfirmMessage({ selectedLights }, r.name)
+    if (warn && !window.confirm(warn)) return
     setArea(r.area); setHeight(r.height); setDesiredLux(r.desiredLux)
     setTone(r.interiorTone || 'normal')
     const sp = SPACE_TYPES.find(s => s.name === r.spaceTypeName)
@@ -146,6 +151,9 @@ function App() {
     setSelectedLights([...r.lights])
   }
   const deleteResult = (id: string) => {
+    // 삭제는 되돌릴 수 없고 불러오기 버튼 바로 옆이라 오탭이 쉽다 — 항상 묻는다.
+    const target = savedResults.find(r => r.id === id)
+    if (!window.confirm(deleteConfirmMessage(target?.name))) return
     setSavedResults(prev => {
       const next = prev.filter(r => r.id !== id)
       localStorage.setItem(LS_KEY_RESULTS, JSON.stringify(next))
