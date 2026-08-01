@@ -215,7 +215,7 @@ function App() {
         <p className="text-center text-[0.65rem] text-gray-500 leading-relaxed">
           E = (Σ lm × adj) × UF × MF / A &nbsp;|&nbsp;
           UF = baseUF(K) × tone &nbsp;|&nbsp;
-          K = √A / (2h) &nbsp;|&nbsp;
+          K = √A / (2·(h−0.8m)) &nbsp;|&nbsp;
           adj = 0.7 (간접조명)
         </p>
 

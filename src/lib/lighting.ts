@@ -4,12 +4,12 @@
    공식:
      E = (Σlm × adj) × UF × MF / A
      UF = baseUF(K) × interiorTone
-     K  = √A / (2h)              (정사각형 가정)
+     K  = √A / (2·(h−0.8))       (정사각형 가정, 작업면 0.8m — 사장 결정 2026-07-31)
      adj = 0.7 if 간접조명 else 1
 */
 
 import type { Light, InteriorTone, SpaceType } from '../types'
-import { INTERIOR_TONES } from '../data/lights'
+import { INTERIOR_TONES, CUSTOM_LIGHT_TYPES } from '../data/lights'
 
 /** 작업면 높이(m) — 실지수는 **작업면에서 조명까지의 높이(Hm)** 로 계산한다.
  *  KS·IES 관행값 0.8m(테이블 상면). 사장 결정 2026-07-31로 적용.
@@ -120,17 +120,12 @@ export function calcSummary(params: {
   }
 }
 
-/** 커스텀 조명 종류별 lm/W 효율 조회 ('기타'는 기본값 80, 호출부에서 직접 입력값 처리) */
+/** 커스텀 조명 종류별 lm/W 효율 조회 — 정본은 카탈로그(data/lights.ts 의
+ *  CUSTOM_LIGHT_TYPES.lmPerW) 하나다. 예전엔 여기 리터럴 맵이 중복 정의돼
+ *  카탈로그를 고쳐도 계산이 안 바뀌었다(감사 #191). '기타'(80)도 카탈로그 값,
+ *  호출부에서 직접 입력값으로 대체한다. */
 export function getLumensPerWatt(typeValue: string): number {
-  if (typeValue === '기타') return 80
-  const map: Record<string, number> = {
-    '매립조명': 90,
-    '직부조명': 90,
-    '간접조명': 100,
-    '레일조명': 85,
-    '전구형 조명': 100,
-  }
-  return map[typeValue] ?? 90
+  return CUSTOM_LIGHT_TYPES.find(t => t.value === typeValue)?.lmPerW ?? 90
 }
 
 /** 입력 필드 앞 0 제거 */
